@@ -13,122 +13,191 @@ output:
 
 Имеется набор данных о растениях Армориканской возвышенности (файл $plants.dat$). Требуется провести кластерный анализ данных методом k-медиан с целью их разбиения на $k$ групп со сходными признаками (Рассмотреть $k=2,3,4$). Сделать выводы.
 
-**Теория**
-
-Рассматривается множество объектов (ситуаций) $X$. 
-
-Задано подмножество прецедентов $X^l={x_1,…,x_l }⊂X$, по каждому из которых собраны некоторые данные. Задана функция расстояния между объектами $\rho(x,x^{'})$, где $x,x^{'}∈X$.
-
-Ставится задача разбить выборку $X$ на непересекающиеся подмножества – кластеры так, чтобы каждый кластер состоял из объектов, близких по метрике $\rho(x,x^{'})$, а объекты разных кластеров существенно отличались.
-
-В данной работе использовалась евклидова метрика: $\rho(x,x^{'}) = \sqrt{\sum_{i=1}^{N}(x_i-x^{'}_i)^2}$
-
-Решение проводится с помощью метода $k-medians$:
-
-0) Начальный шаг: инициализация кластеров.
-Выбирается произвольное множество точек $μ_i, i=1,...,k$, рассматриваемых как начальные центры кластеров.
-
-1) Распределение векторов по кластерам. Каждому элементу выборки сопоставляется свой кластер путём сравнения расстояний от этого элемента до центров кластеров
-
-2) Пересчет центров кластеров. Новый центр кластера - медиана среди всех элементов этого кластера
-
-**Силуэт**
-
-Обозначим через $a$ — среднее расстояние от данного объекта до объектов из того же кластера, через $b$ — среднее расстояние от данного объекта до объектов из ближайшего кластера (отличного от того, в котором лежит сам объект). Тогда силуэтом данного объекта называется величина:
-
-$s = \displaystyle \frac{(b-a)}{max(a,b)}$
-
-Силуэтом выборки называется средняя величина силуэта объектов данной выборки. Таким образом, силуэт показывает, насколько среднее расстояние до объектов своего кластера отличается от среднего расстояния до объектов других кластеров. Данная величина лежит в диапазоне $[-1, 1]$. 
-
-Значения, близкие к $-1$, соответствуют плохим кластеризациям, значения, близкие к $0$, говорят о том, что кластеры пересекаются и накладываются друг на друга, значения, близкие к $1$, соответствуют "плотным" четко выделенным кластерам.
-
-Таким образом, чем больше силуэт, тем более четко выделены кластеры, и они представляют собой компактные, плотно сгруппированные облака точек.
-
-С помощью силуэта можно выбирать оптимальное число кластеров  (если оно заранее неизвестно) — выбирается число кластеров, максимизирующее значение силуэта.
-
 **Данные**
 
 Описание данных: 136 наблюдений, 31 переменная.
     
-##### **Предобработка данных**
+#### **Код программы**
+
+```{r eval = TRUE}
+library(cluster)
+library(NbClust)
 
 
-**Борьба c NA**
+euc.dist <- function(x1, x2)
+  sqrt(sum((x1 - x2) ^ 2))
+```
+
+**Борьба с NA**
 
 Предложим такой способ борьбы с NA (Not Available) - ячейки матрицы, помеченные как NA, заменим на медианное значение соответствующих ячеек в других прецедентах:
 
-```r
-data_dim = 31;
-data_size = 136;
-
-for(i in seq(1,data_dim)){
-  med<-median(data.plants[,i],na.rm = TRUE)
-  for(j in seq(1,data_size)){
-    if(is.na(data.plants[j,i])){
-      data.plants[j,i]=med
+```{r eval = TRUE}
+removeNA <- function(matrix) {
+  data_dim = ncol(matrix)
+  data_size = nrow(matrix)
+  M = matrix
+  for (i in seq(1, data_dim)) {
+    med <- median(M[, i], na.rm = TRUE)
+    for (j in seq(1, data_size)) {
+      if (is.na(M[j, i])) {
+        M[j, i] = med
+      }
     }
   }
+  return(M)
 }
 ```
 
 **Масштабирование**
 
-```r
-  dm = data.matrix(data.plants)
-  for(i in 1:data_dim){
-    dm[,i] = dm[,i]/norm( data.matrix(dm[,i]), type = "M")
+```{r eval = TRUE}
+normalizeMatrix <- function(matrix) {
+  data_dim = ncol(matrix)
+  M = matrix
+  for (i in seq(1, data_dim)) {
+    M[, i] = M[, i] / norm(data.matrix(M[, i]), type = "M")
   }
+  return(M)
+}
 ```
 
+**Кластеризация**
 
-**Выделение нескольких признаков**
+Кластеризуем с помощью функции `pam`. В качестве критерия кластеризации возвращаем среднеквадратическую ошибку разбиения:
 
-```r
-  #Построим матрицу корреляции
-  corr_dm = cor(dm, method = "pearson")
-
-  #Посмотрим, где корреляция менее всего зависит от других переменных
-  corr = 1:data_dim
-  for(i in 1:data_dim){
-    corr[i]=sum(abs(corr_dm[,i]))
-  }
-
-  variables_idx = c(5, 7, 30, 1, 6)
-  dim = 5
+```{r eval = TRUE}
+clusterize <- function(matrix, num_of_clusters) {
+  data_dim = ncol(matrix)
+  data_size = nrow(matrix)
   
-  #Соберём новую матрицу, которая состоит из наименее коррелированных столбцов
-  dm1 <- matrix(seq(1, 16), nrow = data_size, ncol = dim)
-  for(i in 1 : dim){
-    dm1[,i]=dm[,variables_idx[i]]
+  cl <-
+    pam(
+      matrix,
+      k = num_of_clusters,
+      metric = "euclidean",
+      stand = T,
+      keep.diss = TRUE
+    )
+  
+  centers = cl$medoids
+  error = 0
+  for (i in seq(1, data_size)) {
+    min_dist = 1000000
+    
+    for (j in seq(1, num_of_clusters)) {
+      dist = euc.dist(matrix[i, ], centers[j, ])
+      
+      if (dist < min_dist) {
+        min_dist = dist
+      }
+    }
+    error = error + min_dist ^ 2
   }
+  
+  return(sqrt(error))
+}
 ```
 
-**Зависимость силуэта от числа кластеров $k$**
+**Считывание данных, их обработка**
+```{r eval = TRUE}
+# Read data in matrix M
+path = 'data/plants.dat'
+data.plants <- read.table(
+  path,
+  sep = ';',
+  header = TRUE,
+  na.strings = "NA",
+  stringsAsFactors = T
+)
 
-![](plot_k.JPG)
+data.plants$plant.name = NULL
+M = data.matrix(data.plants)
 
+data_dim = ncol(M)
+data_size = nrow(M)
 
-##### **Поиск оптимального $k$**
-
-**Графическое представление кластеров**
-
-**$k=2$**
-
-![](plot_k2.JPG)
-
-**$k=3$**
-
-![](plot_k3.JPG)
-
-**$k=4$**
-
-![](plot_k4.JPG)
-
-**Вычисление оптимального $k$ с помощью библиотеки NbClust**
-```r
-NbClust(data = dm1, diss = NULL, distance = "euclidean", min.nc = 2, max.nc = 4, method = "median",index = "all")
+# Process data
+M = removeNA(M)
+M = normalizeMatrix(M)
 ```
-                    Conclusion: According to the majority rule, the best number of clusters is 4
+
+**Выбор компонент для кластеризации**
+
+```{r eval = TRUE}
+#Построим матрицу корреляции
+corr_dm = cor(M, method = "pearson")
+
+#Посмотрим, где корреляция менее всего зависит от других переменных
+corr = 1:data_dim
+for (i in 1:data_dim) {
+  corr[i] = sum(abs(corr_dm[, i]))
+}
+
+variables_idx = c(5, 7, 30, 1, 6)
+dim = 5
+
+ #Соберём новую матрицу, которая состоит из наименее коррелированных столбцов
+newM <- matrix(0, nrow = data_size, ncol = dim)
+
+for (i in 1:dim) {
+  newM[, i] = M[, variables_idx[i]]
+}
+```
+
+**Кластеризация**
+```{r eval = TRUE}
+# Trying to clustering
+min_num_of_clusters = 2
+max_num_of_clusters = 4
+
+error_vec = matrix(0, nrow = 1, ncol = 3)
+i = 1
+
+for (k in seq(min_num_of_clusters, max_num_of_clusters)) {
+  error_vec[i] = clusterize(newM, k)
+  i = i + 1
+}
+
+plot(min_num_of_clusters:max_num_of_clusters,
+     error_vec,
+     "l",
+     main = "Sqr error for diffirent N of clusters",
+     xlab = "num of clusters",
+     ylab = "square error")
+```
+
+Видим, что по критерию среднеквадратичной ошибки наилучшее число кластеров: 4
+
+**Поиск оптимального числа кластеров с помощью NbClust**
+
+С помощью пакета NbClust можно найти оптимальную схему объединения в кластеры, используя 30 индексов. При этом происходит перебор различных комбинаций числа групп, метрик дистанции и методов кластеризации. Вывод об оптимальном числе классов делается с помощью голосования: берется то число кластеров, за которое "проголосовало" большинство критериев.
+
+```{r eval = FALSE}
+# Finding optimal N of clusters
+NbClust(
+  data = newM,
+  diss = NULL,
+  distance = "euclidean",
+  min.nc = min_num_of_clusters,
+  max.nc = max_num_of_clusters,
+  method = "median",
+  index = "all"
+)
+```
+
+```
+* Among all indices:                                                
+* 9 proposed 2 as the best number of clusters 
+* 4 proposed 3 as the best number of clusters 
+* 11 proposed 4 as the best number of clusters 
+
+                   ***** Conclusion *****                            
+ 
+* According to the majority rule, the best number of clusters is  4 
+```
+
+***Видим, что наш результат совпал с результатом NbClust.***
 
 #### **Задача классификации**
 
@@ -147,7 +216,7 @@ NbClust(data = dm1, diss = NULL, distance = "euclidean", min.nc = 2, max.nc = 4,
 Описание данных: 4898 наблюдений, 12 переменных.  Качество вина оценивается переменной $quality$, значения которой от 0 (плохое вино) до 10 (самое лучшее вино). Следующая гистограмма отображает исходные данные. 
 
 ```{r}
-data.wine <- read.table('winequality-white.csv', 
+data.wine <- read.table('data/winequality-white.csv', 
                         sep=';', 
                         header=TRUE, 
                         na.strings="NA",
@@ -161,7 +230,7 @@ element_samples <- summary(data.wine$quality)
 barplot(element_samples, col = "peachpuff1")
 ```
 
-![**Гистограмма распределения вин по качеству**](hist_origin_data.png)
+[**Гистограмма распределения вин по качеству**]
 
 Видно, что больше всего имеется сведений о вине среднего качества, а о вине низшего и высшего сорта известно мало. Вообще, для задачи классификации такое распределение исходных данных является очень плохим. Классификатор, построенный по этим данным, будет плохо работать.
 
@@ -179,7 +248,7 @@ abline(h = nrow(data.test), lty = 2, col = 2)
 title(main = "Test set types number")
 ```
 
-![**Гистограммы выборок**](hist_train&test_data.png)
+[**Гистограммы выборок**]
 
 Построим дерево решений при помощи `rpart`.
 Полученное дерево решений представлено на иллюстрации ниже.
@@ -203,7 +272,7 @@ accuracy.test <- sum(diag(result.test)) / sum(result.test)
 accuracy.train <- sum(diag(result.train)) / sum(result.train)
 ```
 
-![**Дерево классификатора**](tree_wines.png)
+[**Дерево классификатора**]
 
 Полученное дерево охватывает не все категории вин из исходных данных, а только 5, 6 и 7. Из-за этого результат применения к тестовой выборке ожидается неудовлетворительным.
 
