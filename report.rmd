@@ -1,7 +1,8 @@
 ---
 output:
-  html_document: default
+  word_document: default
   pdf_document: default
+  html_document: default
 ---
 ### **Отчёт по работе "Большие данные: кластеризация и классификация"**
 
@@ -227,7 +228,7 @@ data.wine$quality <- as.factor(data.wine$quality)
 data.wine[, -dim(data.wine)[2]] <- scale(data.wine[, -dim(data.wine)[2]])
 
 element_samples <- summary(data.wine$quality)
-barplot(element_samples, col = "peachpuff1")
+#barplot(element_samples, col = "peachpuff1")
 ```
 
 [**Гистограмма распределения вин по качеству**]
