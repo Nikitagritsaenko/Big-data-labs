@@ -1,100 +1,128 @@
 library(cluster)
 library(NbClust)
-# Read data
-rm(list=ls())
-gc(reset=TRUE)
 
-data.plants <- read.table('plants.dat', 
-                          sep=';', 
-                          header=TRUE, 
-                          na.strings="NA",
-                          stringsAsFactors=T)
+euc.dist <- function(x1, x2)
+  sqrt(sum((x1 - x2) ^ 2))
 
-head(data.plants)
-
-data.plants$plant.name=NULL
-
-#data.plants <- scale(data.plants)
-
-data_dim = 31;
-data_size = 136;
-
-for(i in seq(1,data_dim)){
-  med<-median(data.plants[,i],na.rm = TRUE)
-  for(j in seq(1,data_size)){
-    if(is.na(data.plants[j,i])){
-      data.plants[j,i]=med
+removeNA <- function(matrix) {
+  data_dim = ncol(matrix)
+  data_size = nrow(matrix)
+  M = matrix
+  for (i in seq(1, data_dim)) {
+    med <- median(M[, i], na.rm = TRUE)
+    for (j in seq(1, data_size)) {
+      if (is.na(M[j, i])) {
+        M[j, i] = med
+      }
     }
   }
+  return(M)
 }
 
-dm = data.matrix(data.plants)
-for(i in 1:data_dim){
-  dm[,i] = dm[,i] / norm( data.matrix(dm[,i]), type = "M")
+normalizeMatrix <- function(matrix) {
+  data_dim = ncol(matrix)
+  M = matrix
+  for (i in seq(1, data_dim)) {
+    M[, i] = M[, i] / norm(data.matrix(M[, i]), type = "M")
+  }
+  return(M)
 }
 
-corr_dm = cor(dm, method = "pearson")
+clusterize <- function(matrix, num_of_clusters) {
+  data_dim = ncol(matrix)
+  data_size = nrow(matrix)
+  
+  cl <-
+    pam(
+      matrix,
+      k = num_of_clusters,
+      metric = "euclidean",
+      stand = T,
+      keep.diss = TRUE
+    )
+  
+  centers = cl$medoids
+  error = 0
+  for (i in seq(1, data_size)) {
+    min_dist = 1000000
+    
+    for (j in seq(1, num_of_clusters)) {
+      dist = euc.dist(matrix[i, ], centers[j, ])
+      
+      if (dist < min_dist) {
+        min_dist = dist
+      }
+    }
+    error = error + min_dist ^ 2
+  }
+  
+  return(sqrt(error))
+}
+# ------------------------------------------------------------------------
+
+# Read data in matrix M
+path = 'data/plants.dat'
+data.plants <- read.table(
+  path,
+  sep = ';',
+  header = TRUE,
+  na.strings = "NA",
+  stringsAsFactors = T
+)
+
+data.plants$plant.name = NULL
+M = data.matrix(data.plants)
+
+data_dim = ncol(M)
+data_size = nrow(M)
+
+# Process data
+M = removeNA(M)
+M = normalizeMatrix(M)
+
+# Choose components
+corr_dm = cor(M, method = "pearson")
 corr = 1:data_dim
 
-for(i in 1:data_dim){
- corr[i]=sum(abs(corr_dm[,i]))
+for (i in 1:data_dim) {
+  corr[i] = sum(abs(corr_dm[, i]))
 }
 
-summary(data.plants)
-
-#variables_idx = c(5, 30, 29, 25, 7)
 variables_idx = c(5, 7, 30, 1, 6)
 dim = 5
-dm1 <- matrix(seq(1, 16), nrow = 136, ncol = dim)
-for(i in 1 : dim){
-  dm1[,i]=dm[,variables_idx[i]]
-}
-dataL = data.plants[, c("durflow", "begflow", "height")]
 
-#NbClust(data = data.plants, diss = NULL, distance = "euclidean", min.nc = 2, max.nc = 4, method = "median", index = "all", alphaBeale = 0.1)
+newM <- matrix(0, nrow = data_size, ncol = dim)
 
-k.vec <- seq(2, 4)
-diss.vec <- c()
-cl.vec <- c()
-cl$clustering
-
-for (k in k.vec) {
-  
-  png(paste0("plant_k", k, ".png"), width = 500, height = 500)
-  cl <- pam(dm1, k = k, metric = "euclidean", stand = T, keep.diss = TRUE)
-  #cl <- clara(dataM, k=k, metric = "manhattan",
-        #stand = TRUE,
-        #keep.diss = TRUE)
-  
-  clusplot(dm1, cl$clustering, color=TRUE, shade=TRUE, labels=5, lines=2)
-  #plot(cl)
-  
-  cl.vec <- c(cl.vec, cl)
-  diss <- cl$silinfo$avg.widt
-  diss.vec <- c(diss.vec, diss)
-  
-  dev.off()
+for (i in 1:dim) {
+  newM[, i] = M[, variables_idx[i]]
 }
 
+# Trying to clustering
+min_num_of_clusters = 2
+max_num_of_clusters = 4
 
+error_vec = matrix(0, nrow = 1, ncol = 3)
+i = 1
 
-diss.vec
-
-custom.panel <- function() {
-  axis(1, tck=1, col.ticks="light gray")
-  axis(1, tck=-0.015, col.ticks="black")
-  axis(2, tck=1, col.ticks="light gray")
-  axis(2, tck=-0.015)
+for (k in seq(min_num_of_clusters, max_num_of_clusters)) {
+  error_vec[i] = clusterize(newM, k)
+  i = i + 1
 }
 
-options(repr.plot.width = 10, repr.plot.height = 10)
-plot(k.vec, diss.vec,
-     type = "l",
-     xlab = "k",
-     ylab = "diss",
-     lwd = 2,
-     col = adjustcolor("black", alpha.f = 0.7),
-     pch = 19,
-     panel.first = custom.panel())
+plot(min_num_of_clusters:max_num_of_clusters,
+     error_vec,
+     "l",
+     main = "Sqr error for diffirent N of clusters",
+     xlab = "num of clusters",
+     ylab = "square error")
 
-NbClust(data = dm1, diss = NULL, distance = "euclidean", min.nc = 2, max.nc = 4, method = "median", index = "all")
+# Finding optimal N of clusters
+NbClust(
+  data = newM,
+  diss = NULL,
+  distance = "euclidean",
+  min.nc = min_num_of_clusters,
+  max.nc = max_num_of_clusters,
+  method = "median",
+  index = "all"
+)
