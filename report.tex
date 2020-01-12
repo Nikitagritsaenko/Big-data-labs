@@ -1,0 +1,980 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+
+\author{}
+\date{\vspace{-2.5em}}
+
+\begin{document}
+
+\hypertarget{ux43eux442ux447ux451ux442-ux43fux43e-ux440ux430ux431ux43eux442ux435-ux431ux43eux43bux44cux448ux438ux435-ux434ux430ux43dux43dux44bux435-ux43aux43bux430ux441ux442ux435ux440ux438ux437ux430ux446ux438ux44f-ux438-ux43aux43bux430ux441ux441ux438ux444ux438ux43aux430ux446ux438ux44f}{%
+\subsubsection{\texorpdfstring{\textbf{Отчёт по работе ``Большие данные:
+кластеризация и
+классификация''}}{Отчёт по работе ``Большие данные: кластеризация и классификация''}}\label{ux43eux442ux447ux451ux442-ux43fux43e-ux440ux430ux431ux43eux442ux435-ux431ux43eux43bux44cux448ux438ux435-ux434ux430ux43dux43dux44bux435-ux43aux43bux430ux441ux442ux435ux440ux438ux437ux430ux446ux438ux44f-ux438-ux43aux43bux430ux441ux441ux438ux444ux438ux43aux430ux446ux438ux44f}}
+
+Грицаенко Никита, Жуков Александр, Сергеев Георгий, Митрофанова Алина,
+Чепулис Михаил, Плаксин Даниил
+
+\hypertarget{ux437ux430ux434ux430ux447ux430-ux43aux43bux430ux441ux442ux435ux440ux438ux437ux430ux446ux438ux438}{%
+\paragraph{\texorpdfstring{\textbf{Задача
+кластеризации}}{Задача кластеризации}}\label{ux437ux430ux434ux430ux447ux430-ux43aux43bux430ux441ux442ux435ux440ux438ux437ux430ux446ux438ux438}}
+
+\textbf{Задание}
+
+Имеется набор данных о растениях Армориканской возвышенности (файл
+\(plants.dat\)). Требуется провести кластерный анализ данных методом
+k-медиан с целью их разбиения на \(k\) групп со сходными признаками
+(Рассмотреть \(k=2,3,4\)). Сделать выводы.
+
+\textbf{Данные}
+
+Описание данных: 136 наблюдений, 31 переменная.
+
+\hypertarget{ux43aux43eux434-ux43fux440ux43eux433ux440ux430ux43cux43cux44b}{%
+\paragraph{\texorpdfstring{\textbf{Код
+программы}}{Код программы}}\label{ux43aux43eux434-ux43fux440ux43eux433ux440ux430ux43cux43cux44b}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(cluster)}
+\KeywordTok{library}\NormalTok{(NbClust)}
+\KeywordTok{library}\NormalTok{(rpart.plot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: rpart
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{euc.dist <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(x1, x2)}
+  \KeywordTok{sqrt}\NormalTok{(}\KeywordTok{sum}\NormalTok{((x1 }\OperatorTok{-}\StringTok{ }\NormalTok{x2) }\OperatorTok{^}\StringTok{ }\DecValTok{2}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Борьба с NA}
+
+Предложим такой способ борьбы с NA (Not Available) - ячейки матрицы,
+помеченные как NA, заменим на медианное значение соответствующих ячеек в
+других прецедентах:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{removeNA <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(matrix) \{}
+\NormalTok{  data_dim =}\StringTok{ }\KeywordTok{ncol}\NormalTok{(matrix)}
+\NormalTok{  data_size =}\StringTok{ }\KeywordTok{nrow}\NormalTok{(matrix)}
+\NormalTok{  M =}\StringTok{ }\NormalTok{matrix}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, data_dim)) \{}
+\NormalTok{    med <-}\StringTok{ }\KeywordTok{median}\NormalTok{(M[, i], }\DataTypeTok{na.rm =} \OtherTok{TRUE}\NormalTok{)}
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, data_size)) \{}
+      \ControlFlowTok{if}\NormalTok{ (}\KeywordTok{is.na}\NormalTok{(M[j, i])) \{}
+\NormalTok{        M[j, i] =}\StringTok{ }\NormalTok{med}
+\NormalTok{      \}}
+\NormalTok{    \}}
+\NormalTok{  \}}
+  \KeywordTok{return}\NormalTok{(M)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Масштабирование}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{normalizeMatrix <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(matrix) \{}
+\NormalTok{  data_dim =}\StringTok{ }\KeywordTok{ncol}\NormalTok{(matrix)}
+\NormalTok{  M =}\StringTok{ }\NormalTok{matrix}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, data_dim)) \{}
+\NormalTok{    M[, i] =}\StringTok{ }\NormalTok{M[, i] }\OperatorTok{/}\StringTok{ }\KeywordTok{norm}\NormalTok{(}\KeywordTok{data.matrix}\NormalTok{(M[, i]), }\DataTypeTok{type =} \StringTok{"M"}\NormalTok{)}
+\NormalTok{  \}}
+  \KeywordTok{return}\NormalTok{(M)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Кластеризация}
+
+Кластеризуем с помощью функции \texttt{pam}. В качестве критерия
+кластеризации возвращаем среднеквадратическую ошибку разбиения:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{clusterize <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(matrix, num_of_clusters) \{}
+\NormalTok{  data_dim =}\StringTok{ }\KeywordTok{ncol}\NormalTok{(matrix)}
+\NormalTok{  data_size =}\StringTok{ }\KeywordTok{nrow}\NormalTok{(matrix)}
+  
+\NormalTok{  cl <-}
+\StringTok{    }\KeywordTok{pam}\NormalTok{(}
+\NormalTok{      matrix,}
+      \DataTypeTok{k =}\NormalTok{ num_of_clusters,}
+      \DataTypeTok{metric =} \StringTok{"euclidean"}\NormalTok{,}
+      \DataTypeTok{stand =}\NormalTok{ T,}
+      \DataTypeTok{keep.diss =} \OtherTok{TRUE}
+\NormalTok{    )}
+  
+\NormalTok{  centers =}\StringTok{ }\NormalTok{cl}\OperatorTok{$}\NormalTok{medoids}
+\NormalTok{  error =}\StringTok{ }\DecValTok{0}
+  \ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, data_size)) \{}
+\NormalTok{    min_dist =}\StringTok{ }\DecValTok{1000000}
+    
+    \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, num_of_clusters)) \{}
+\NormalTok{      dist =}\StringTok{ }\KeywordTok{euc.dist}\NormalTok{(matrix[i, ], centers[j, ])}
+      
+      \ControlFlowTok{if}\NormalTok{ (dist }\OperatorTok{<}\StringTok{ }\NormalTok{min_dist) \{}
+\NormalTok{        min_dist =}\StringTok{ }\NormalTok{dist}
+\NormalTok{      \}}
+\NormalTok{    \}}
+\NormalTok{    error =}\StringTok{ }\NormalTok{error }\OperatorTok{+}\StringTok{ }\NormalTok{min_dist }\OperatorTok{^}\StringTok{ }\DecValTok{2}
+\NormalTok{  \}}
+  
+  \KeywordTok{return}\NormalTok{(}\KeywordTok{sqrt}\NormalTok{(error))}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Считывание данных, их обработка}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Read data in matrix M}
+\NormalTok{path =}\StringTok{ 'data/plants.dat'}
+\NormalTok{data.plants <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}
+\NormalTok{  path,}
+  \DataTypeTok{sep =} \StringTok{';'}\NormalTok{,}
+  \DataTypeTok{header =} \OtherTok{TRUE}\NormalTok{,}
+  \DataTypeTok{na.strings =} \StringTok{"NA"}\NormalTok{,}
+  \DataTypeTok{stringsAsFactors =}\NormalTok{ T}
+\NormalTok{)}
+
+\NormalTok{data.plants}\OperatorTok{$}\NormalTok{plant.name =}\StringTok{ }\OtherTok{NULL}
+\NormalTok{M =}\StringTok{ }\KeywordTok{data.matrix}\NormalTok{(data.plants)}
+
+\NormalTok{data_dim =}\StringTok{ }\KeywordTok{ncol}\NormalTok{(M)}
+\NormalTok{data_size =}\StringTok{ }\KeywordTok{nrow}\NormalTok{(M)}
+
+\CommentTok{# Process data}
+\NormalTok{M =}\StringTok{ }\KeywordTok{removeNA}\NormalTok{(M)}
+\NormalTok{M =}\StringTok{ }\KeywordTok{normalizeMatrix}\NormalTok{(M)}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Выбор компонент для кластеризации}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Построим матрицу корреляции}
+\NormalTok{corr_dm =}\StringTok{ }\KeywordTok{cor}\NormalTok{(M, }\DataTypeTok{method =} \StringTok{"pearson"}\NormalTok{)}
+
+\CommentTok{#Посмотрим, где корреляция менее всего зависит от других переменных}
+\NormalTok{corr =}\StringTok{ }\DecValTok{1}\OperatorTok{:}\NormalTok{data_dim}
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{data_dim) \{}
+\NormalTok{  corr[i] =}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{abs}\NormalTok{(corr_dm[, i]))}
+\NormalTok{\}}
+
+\NormalTok{variables_idx =}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{7}\NormalTok{, }\DecValTok{30}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{6}\NormalTok{)}
+\NormalTok{dim =}\StringTok{ }\DecValTok{5}
+
+ \CommentTok{#Соберём новую матрицу, которая состоит из наименее коррелированных столбцов}
+\NormalTok{newM <-}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{nrow =}\NormalTok{ data_size, }\DataTypeTok{ncol =}\NormalTok{ dim)}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\NormalTok{dim) \{}
+\NormalTok{  newM[, i] =}\StringTok{ }\NormalTok{M[, variables_idx[i]]}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Кластеризация}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Trying to clustering}
+\NormalTok{min_num_of_clusters =}\StringTok{ }\DecValTok{2}
+\NormalTok{max_num_of_clusters =}\StringTok{ }\DecValTok{4}
+
+\NormalTok{error_vec =}\StringTok{ }\KeywordTok{matrix}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DataTypeTok{nrow =} \DecValTok{1}\NormalTok{, }\DataTypeTok{ncol =} \DecValTok{3}\NormalTok{)}
+\NormalTok{i =}\StringTok{ }\DecValTok{1}
+
+\ControlFlowTok{for}\NormalTok{ (k }\ControlFlowTok{in} \KeywordTok{seq}\NormalTok{(min_num_of_clusters, max_num_of_clusters)) \{}
+\NormalTok{  error_vec[i] =}\StringTok{ }\KeywordTok{clusterize}\NormalTok{(newM, k)}
+\NormalTok{  i =}\StringTok{ }\NormalTok{i }\OperatorTok{+}\StringTok{ }\DecValTok{1}
+\NormalTok{\}}
+
+\KeywordTok{plot}\NormalTok{(min_num_of_clusters}\OperatorTok{:}\NormalTok{max_num_of_clusters,}
+\NormalTok{     error_vec,}
+     \StringTok{"l"}\NormalTok{,}
+     \DataTypeTok{main =} \StringTok{"Sqr error for diffirent N of clusters"}\NormalTok{,}
+     \DataTypeTok{xlab =} \StringTok{"num of clusters"}\NormalTok{,}
+     \DataTypeTok{ylab =} \StringTok{"square error"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+Видим, что по критерию среднеквадратичной ошибки наилучшее число
+кластеров: 4
+
+\textbf{Поиск оптимального числа кластеров с помощью NbClust}
+
+С помощью пакета NbClust можно найти оптимальную схему объединения в
+кластеры, используя 30 индексов. При этом происходит перебор различных
+комбинаций числа групп, метрик дистанции и методов кластеризации. Вывод
+об оптимальном числе классов делается с помощью голосования: берется то
+число кластеров, за которое ``проголосовало'' большинство критериев.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Finding optimal N of clusters}
+\KeywordTok{NbClust}\NormalTok{(}
+  \DataTypeTok{data =}\NormalTok{ newM,}
+  \DataTypeTok{diss =} \OtherTok{NULL}\NormalTok{,}
+  \DataTypeTok{distance =} \StringTok{"euclidean"}\NormalTok{,}
+  \DataTypeTok{min.nc =}\NormalTok{ min_num_of_clusters,}
+  \DataTypeTok{max.nc =}\NormalTok{ max_num_of_clusters,}
+  \DataTypeTok{method =} \StringTok{"median"}\NormalTok{,}
+  \DataTypeTok{index =} \StringTok{"all"}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+* Among all indices:                                                
+* 9 proposed 2 as the best number of clusters 
+* 4 proposed 3 as the best number of clusters 
+* 11 proposed 4 as the best number of clusters 
+
+                   ***** Conclusion *****                            
+ 
+* According to the majority rule, the best number of clusters is  4 
+\end{verbatim}
+
+\textbf{\emph{Видим, что наш результат совпал с результатом NbClust.}}
+
+\textbf{\emph{Видим, что наш результат совпал с результатом NbClust.}}
+
+\hypertarget{ux437ux430ux434ux430ux447ux430-ux43aux43bux430ux441ux441ux438ux444ux438ux43aux430ux446ux438ux438}{%
+\subsubsection{\texorpdfstring{\textbf{Задача
+классификации}}{Задача классификации}}\label{ux437ux430ux434ux430ux447ux430-ux43aux43bux430ux441ux441ux438ux444ux438ux43aux430ux446ux438ux438}}
+
+Имеется множество объектов \(X\), конечное множество ответов \(Y\).
+
+Задана выборка \(X^l={x_1,…,x_l }⊂X\) и множество известных ответов
+\(y_i=a^*(x_i)\), вектор \(x∈X\) -- набор признаков, совокупность
+упорядоченных пар ``объект-ответ'' \((x_i,y_i)\) -- обучающая выборка.
+
+Ставится задача построить решающее правило \(a:X→Y\), которое приближало
+бы функцию \(a^* (x)\) на всем множестве \(X\) (построить алгоритм,
+классифицирующий произвольный объект из исходного множества).
+
+\#\#\#\#\textbf{Задание}:
+
+Имеется таблица данных о качестве белых вин (Файл
+\(winequality-white.csv\)). Требуется методом деревьев по 90\% данных
+построить классификатор и проверить его на 10\% приведенных данных.
+Сделать выводы.
+
+\#\#\#\#\textbf{Данные}:
+
+Описание данных: 4898 наблюдений, 12 переменных. Качество вина
+оценивается переменной \(quality\), значения которой от 0 (плохое вино)
+до 10 (самое лучшее вино). Следующая гистограмма отображает исходные
+данные.
+
+\#\#\#\#\textbf{Код программы}
+
+\textbf{Библиотеки и функции, необходимые для работы программы} +
+\texttt{drawHistogram} - создает и отображает гистограмму с заголовком
+\texttt{title} для таблицы \texttt{wines}. В качестве критерия
+используется колонка с именем \texttt{quality}. Над каждым столбцом
+гистограммы отображается соответствующее числовое значение. +
+\texttt{makeDataSets} - перемешивает данные(строки) таблицы
+\texttt{wines} случайным образом и создает два набора, содержащие 90\% и
+10\% данных соответственно. Возвращаемое значение - список из двух
+наборов данных. Случайный закон инициализируется константным значением
+\texttt{seed}, чтобы результаты воспроизводились от опыта к опыту. +
+\texttt{testModel} - производит тестирование модели \texttt{tree} на
+наборах \texttt{test\_data} и \texttt{train\_data.} Предполагается, что
+обучение модели производится с помощью набора \texttt{train\_data.} +
+\texttt{combineClasses} - изменяет столбец quality, являющийся фактором
+таблицы wines. Комбинирует уровни факторов `3', `4', `5', а также `7',
+`8', `9' в уровни `Low' и `High'. Уровень `6' переименовывается в
+`Medium'. \textbf{Запустите этот фрагмент кода для корректной работы
+следующих фрагментов.}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(repr)}
+\KeywordTok{library}\NormalTok{(maptree)}
+\KeywordTok{library}\NormalTok{(tree)}
+\KeywordTok{library}\NormalTok{(caret)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: lattice
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: ggplot2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(forcats)}
+\KeywordTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{drawHistogram <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(wines, title)\{}
+  \KeywordTok{options}\NormalTok{(}\DataTypeTok{repr.plot.width=}\DecValTok{6}\NormalTok{, }\DataTypeTok{repr.plot.height=}\DecValTok{6}\NormalTok{)}
+\NormalTok{  element_samples <-}\StringTok{ }\KeywordTok{summary}\NormalTok{(wines}\OperatorTok{$}\NormalTok{quality)}
+\NormalTok{  midpoints <-}\StringTok{ }\KeywordTok{barplot}\NormalTok{(element_samples, }\DataTypeTok{col =} \StringTok{"peachpuff1"}\NormalTok{, }\DataTypeTok{main =}\NormalTok{ title)}
+  \KeywordTok{abline}\NormalTok{(}\DataTypeTok{h =} \KeywordTok{nrow}\NormalTok{(wines), }\DataTypeTok{lty =} \DecValTok{2}\NormalTok{, }\DataTypeTok{col =} \DecValTok{2}\NormalTok{)}
+\NormalTok{  num_elements <-}\StringTok{ }\KeywordTok{dim}\NormalTok{(data.wine)[}\DecValTok{1}\NormalTok{]}
+\NormalTok{  num_types <-}\StringTok{ }\KeywordTok{length}\NormalTok{(element_samples)}
+\NormalTok{  y_coord <-}\StringTok{ }\NormalTok{element_samples}
+\NormalTok{  max_val <-}\StringTok{ }\KeywordTok{max}\NormalTok{(element_samples)}
+  \ControlFlowTok{for}\NormalTok{ (j }\ControlFlowTok{in} \KeywordTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, num_types)) \{}
+    \ControlFlowTok{if}\NormalTok{ (element_samples[j] }\OperatorTok{/}\StringTok{ }\NormalTok{max_val }\OperatorTok{>}\StringTok{ }\FloatTok{0.9}\NormalTok{)\{}
+\NormalTok{      y_coord[j] <-}\StringTok{ }\NormalTok{y_coord[j] }\OperatorTok{-}\StringTok{ }\FloatTok{0.1} \OperatorTok{*}\StringTok{ }\NormalTok{max_val }
+\NormalTok{    \}}
+    \ControlFlowTok{else}\NormalTok{\{}
+\NormalTok{      y_coord[j] <-}\StringTok{ }\NormalTok{y_coord[j] }\OperatorTok{+}\StringTok{ }\FloatTok{0.05} \OperatorTok{*}\StringTok{ }\NormalTok{max_val}
+\NormalTok{    \}}
+        
+\NormalTok{  \}}
+  \KeywordTok{text}\NormalTok{(midpoints, y_coord, }\DataTypeTok{labels=}\NormalTok{element_samples)}
+\NormalTok{\}}
+
+\NormalTok{makeDataSets <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(wines)\{}
+  \KeywordTok{set.seed}\NormalTok{(}\DecValTok{12345}\NormalTok{) }\CommentTok{#constant seed for result reproducibility}
+\NormalTok{  n <-}\StringTok{ }\KeywordTok{dim}\NormalTok{(wines)[}\DecValTok{1}\NormalTok{]}
+\NormalTok{  data <-}\StringTok{ }\NormalTok{wines[}\KeywordTok{order}\NormalTok{(}\KeywordTok{runif}\NormalTok{(n)),]}
+\NormalTok{  n.train <-}\StringTok{ }\KeywordTok{as.integer}\NormalTok{(}\FloatTok{0.8} \OperatorTok{*}\StringTok{ }\NormalTok{n)}
+\NormalTok{  data.train <-}\StringTok{ }\NormalTok{data[}\DecValTok{1}\OperatorTok{:}\NormalTok{n.train,]}
+\NormalTok{  data.test <-}\StringTok{ }\NormalTok{data[(n.train }\OperatorTok{+}\StringTok{ }\DecValTok{1}\NormalTok{)}\OperatorTok{:}\NormalTok{n,]}
+  \KeywordTok{return}\NormalTok{ (}\KeywordTok{list}\NormalTok{(}\DataTypeTok{train =}\NormalTok{ data.train, }\DataTypeTok{test =}\NormalTok{ data.test))}
+\NormalTok{\}}
+
+\NormalTok{testModel <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(tree, test_data, train_data)\{}
+  
+\NormalTok{  predict.test <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(tree, test_data, }\DataTypeTok{type =} \StringTok{"class"}\NormalTok{)}
+\NormalTok{  predict.train <-}\StringTok{ }\KeywordTok{predict}\NormalTok{(tree, train_data, }\DataTypeTok{type =} \StringTok{"class"}\NormalTok{)}
+  
+\NormalTok{  result.test <-}\StringTok{ }\KeywordTok{table}\NormalTok{(test_data}\OperatorTok{$}\NormalTok{quality, predict.test)}
+\NormalTok{  result.train <-}\StringTok{ }\KeywordTok{table}\NormalTok{(train_data}\OperatorTok{$}\NormalTok{quality, predict.train)}
+  
+\NormalTok{  accuracy.test <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{diag}\NormalTok{(result.test)) }\OperatorTok{/}\StringTok{ }\KeywordTok{sum}\NormalTok{(result.test)}
+\NormalTok{  accuracy.train <-}\StringTok{ }\KeywordTok{sum}\NormalTok{(}\KeywordTok{diag}\NormalTok{(result.train)) }\OperatorTok{/}\StringTok{ }\KeywordTok{sum}\NormalTok{(result.train)}
+  \KeywordTok{print}\NormalTok{(}\StringTok{"test data prediction accuracy: "}\NormalTok{)}
+  \KeywordTok{print}\NormalTok{(accuracy.test)}
+  \KeywordTok{print}\NormalTok{(}\StringTok{"train data prediction accuracy:"}\NormalTok{)}
+  \KeywordTok{print}\NormalTok{(accuracy.train)}
+  
+  \CommentTok{#confusion matrix}
+\NormalTok{  caret}\OperatorTok{::}\KeywordTok{confusionMatrix}\NormalTok{(test_data}\OperatorTok{$}\NormalTok{quality, predict.test)}
+  
+\NormalTok{\}}
+
+
+\NormalTok{combineClasses <-}\StringTok{ }\ControlFlowTok{function}\NormalTok{(wines)\{}
+\NormalTok{  df =}\StringTok{ }\NormalTok{wines}
+\NormalTok{  df }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{quality =} \KeywordTok{fct_collapse}\NormalTok{(df}\OperatorTok{$}\NormalTok{quality,}
+                                  \DataTypeTok{Low =} \KeywordTok{c}\NormalTok{(}\StringTok{"3"}\NormalTok{,}\StringTok{"4"}\NormalTok{,}\StringTok{"5"}\NormalTok{),}
+                                  \DataTypeTok{Medium =} \KeywordTok{c}\NormalTok{(}\StringTok{"6"}\NormalTok{),}
+                                  \DataTypeTok{High =} \KeywordTok{c}\NormalTok{(}\StringTok{"7"}\NormalTok{,}\StringTok{"8"}\NormalTok{,}\StringTok{"9"}\NormalTok{)))->x}
+  \KeywordTok{return}\NormalTok{(x)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Считывание данных и предобработка}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Read data}
+\NormalTok{data.wine <-}\StringTok{ }\KeywordTok{read.table}\NormalTok{(}\StringTok{'data/winequality-white.csv'}\NormalTok{, }
+                        \DataTypeTok{sep=}\StringTok{';'}\NormalTok{, }
+                        \DataTypeTok{header=}\OtherTok{TRUE}\NormalTok{, }
+                        \DataTypeTok{na.strings=}\StringTok{"NA"}\NormalTok{,}
+                        \DataTypeTok{stringsAsFactors=}\NormalTok{T)}
+
+\CommentTok{# Make 'quality' vector to be factor}
+\NormalTok{data.wine}\OperatorTok{$}\NormalTok{quality <-}\StringTok{ }\KeywordTok{as.factor}\NormalTok{(data.wine}\OperatorTok{$}\NormalTok{quality)}
+
+\CommentTok{# Remove 'NA' rows from table. }
+\CommentTok{# N.B. In file 'data/winequality-white.csv' there is no NA values, so this line is irrelevant}
+\NormalTok{data.wine <-}\StringTok{ }\NormalTok{data.wine[}\KeywordTok{complete.cases}\NormalTok{(data.wine),]}
+
+\CommentTok{# Scale all columns in table except 'quality', which is factor column}
+\NormalTok{data.wine[, }\OperatorTok{-}\KeywordTok{dim}\NormalTok{(data.wine)[}\DecValTok{2}\NormalTok{]] <-}\StringTok{ }\KeywordTok{scale}\NormalTok{(data.wine[, }\OperatorTok{-}\KeywordTok{dim}\NormalTok{(data.wine)[}\DecValTok{2}\NormalTok{]])}
+\end{Highlighting}
+\end{Shaded}
+
+\textbf{Гистограмма распределения вин по качеству}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{drawHistogram}\NormalTok{(data.wine, }\StringTok{"Гистограмма вин по качеству"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xc3
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0x4
+\end{verbatim}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+Видно, что больше всего имеется сведений о вине среднего качества, а о
+вине низшего и высшего сорта известно мало. Вообще, для задачи
+классификации такое распределение исходных данных является очень плохим.
+Классификатор, построенный по этим данным, будет плохо работать.
+
+\textbf{Разделение данных на тренировочную и тестовую выборки}
+
+Перемешаем данные, разделим их на две группы -- тренировочную (90\%) и
+тестовую (10\%).
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data <-}\StringTok{ }\KeywordTok{makeDataSets}\NormalTok{(data.wine)}
+\end{Highlighting}
+\end{Shaded}
+
+Получим следующие гистограммы для тренировочной и тестовой выборок.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{drawHistogram}\NormalTok{(data}\OperatorTok{$}\NormalTok{train, }\StringTok{"Тренировочная выборка"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xd2
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0x4
+\end{verbatim}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{drawHistogram}\NormalTok{(data}\OperatorTok{$}\NormalTok{test, }\StringTok{"Тестовая выборка"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xd2
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xe5
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xf1
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xf2
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xee
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xe2
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xe0
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xff
+
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xff
+\end{verbatim}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+\textbf{Построение модели класификации} Построим дерево решений при
+помощи \texttt{tree}. Проверим его на выборках, а также построим матрицу
+сопряженности для построенной модели.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wine.tree <-}\StringTok{ }\KeywordTok{tree}\NormalTok{(quality }\OperatorTok{~}\NormalTok{., data}\OperatorTok{$}\NormalTok{train)}
+
+\KeywordTok{testModel}\NormalTok{(wine.tree, data}\OperatorTok{$}\NormalTok{test, data}\OperatorTok{$}\NormalTok{train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "test data prediction accuracy: "
+## [1] 0.5193878
+## [1] "train data prediction accuracy:"
+## [1] 0.5096988
+\end{verbatim}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   3   4   5   6   7   8   9
+##          3   0   0   3   2   0   0   0
+##          4   0   0  21   7   1   0   0
+##          5   0   0 185 101   6   0   0
+##          6   0   0 108 259  74   0   0
+##          7   0   0   8  98  65   0   0
+##          8   0   0   2  22  17   0   0
+##          9   0   0   1   0   0   0   0
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.5194          
+##                  95% CI : (0.4876, 0.5511)
+##     No Information Rate : 0.499           
+##     P-Value [Acc > NIR] : 0.1064          
+##                                           
+##                   Kappa : 0.2568          
+##                                           
+##  Mcnemar's Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: 3 Class: 4 Class: 5 Class: 6 Class: 7 Class: 8
+## Sensitivity                NA       NA   0.5640   0.5297  0.39877       NA
+## Specificity          0.994898  0.97041   0.8359   0.6293  0.87026  0.95816
+## Pos Pred Value             NA       NA   0.6336   0.5873  0.38012       NA
+## Neg Pred Value             NA       NA   0.7922   0.5733  0.87886       NA
+## Prevalence           0.000000  0.00000   0.3347   0.4990  0.16633  0.00000
+## Detection Rate       0.000000  0.00000   0.1888   0.2643  0.06633  0.00000
+## Detection Prevalence 0.005102  0.02959   0.2980   0.4500  0.17449  0.04184
+## Balanced Accuracy          NA       NA   0.7000   0.5795  0.63452       NA
+##                      Class: 9
+## Sensitivity                NA
+## Specificity           0.99898
+## Pos Pred Value             NA
+## Neg Pred Value             NA
+## Prevalence            0.00000
+## Detection Rate        0.00000
+## Detection Prevalence  0.00102
+## Balanced Accuracy          NA
+\end{verbatim}
+
+Полученное дерево решений представлено на иллюстрации ниже.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{options}\NormalTok{(}\DataTypeTok{repr.plot.width =} \DecValTok{14}\NormalTok{, }\DataTypeTok{repr.plot.height =} \DecValTok{10}\NormalTok{)}
+\KeywordTok{draw.tree}\NormalTok{(wine.tree, }\DataTypeTok{cex =} \FloatTok{0.75}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-16-1.pdf}
+
+Построим дерево решений при помощи \texttt{rpart}. Проверим его на
+выборках, а также построим матрицу сопряженности для построенной модели.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{wine.rpart <-}\StringTok{ }\KeywordTok{rpart}\NormalTok{(quality }\OperatorTok{~}\NormalTok{., data}\OperatorTok{$}\NormalTok{train)}
+\KeywordTok{testModel}\NormalTok{(wine.rpart, data}\OperatorTok{$}\NormalTok{test, data}\OperatorTok{$}\NormalTok{train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "test data prediction accuracy: "
+## [1] 0.555102
+## [1] "train data prediction accuracy:"
+## [1] 0.5370087
+\end{verbatim}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction   3   4   5   6   7   8   9
+##          3   0   0   2   3   0   0   0
+##          4   0   0  19   9   1   0   0
+##          5   0   0 186 105   1   0   0
+##          6   0   0  88 334  19   0   0
+##          7   0   0   5 142  24   0   0
+##          8   0   0   1  38   2   0   0
+##          9   0   0   0   1   0   0   0
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.5551          
+##                  95% CI : (0.5234, 0.5865)
+##     No Information Rate : 0.6449          
+##     P-Value [Acc > NIR] : 1               
+##                                           
+##                   Kappa : 0.2706          
+##                                           
+##  Mcnemar's Test P-Value : NA              
+## 
+## Statistics by Class:
+## 
+##                      Class: 3 Class: 4 Class: 5 Class: 6 Class: 7 Class: 8
+## Sensitivity                NA       NA   0.6179   0.5285  0.51064       NA
+## Specificity          0.994898  0.97041   0.8439   0.6925  0.84244  0.95816
+## Pos Pred Value             NA       NA   0.6370   0.7574  0.14035       NA
+## Neg Pred Value             NA       NA   0.8328   0.4471  0.97157       NA
+## Prevalence           0.000000  0.00000   0.3071   0.6449  0.04796  0.00000
+## Detection Rate       0.000000  0.00000   0.1898   0.3408  0.02449  0.00000
+## Detection Prevalence 0.005102  0.02959   0.2980   0.4500  0.17449  0.04184
+## Balanced Accuracy          NA       NA   0.7309   0.6105  0.67654       NA
+##                      Class: 9
+## Sensitivity                NA
+## Specificity           0.99898
+## Pos Pred Value             NA
+## Neg Pred Value             NA
+## Prevalence            0.00000
+## Detection Rate        0.00000
+## Detection Prevalence  0.00102
+## Balanced Accuracy          NA
+\end{verbatim}
+
+Полученное дерево решений представлено на иллюстрации ниже.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{draw.tree}\NormalTok{(wine.rpart, }\DataTypeTok{cex =} \FloatTok{0.75}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-18-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{rpart.plot}\NormalTok{(wine.rpart, }
+           \DataTypeTok{type=}\DecValTok{4}\NormalTok{,}
+           \DataTypeTok{extra=}\DecValTok{101}\NormalTok{, }
+           \DataTypeTok{box.palette=}\StringTok{"GnBu"}\NormalTok{,}
+           \DataTypeTok{branch.lty=}\DecValTok{3}\NormalTok{, }
+           \DataTypeTok{shadow.col=}\StringTok{"gray"}\NormalTok{, }
+           \DataTypeTok{nn=}\OtherTok{TRUE}\NormalTok{,}
+           \DataTypeTok{roundint =} \OtherTok{FALSE}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-18-2.pdf}
+
+Полученные деревья охватывают не все категории вин из исходных данных, а
+только 5, 6 и 7. Из-за этого результат применения к тестовой выборке
+оказывается неудовлетворительным.
+
+Полученный результат следует признать плохим, поскольку дерево решений
+правильно классифицирует чуть больше 50\% данных.
+
+\textbf{Улучшение распознавания путем слияния классов качества вин}
+
+Попробуем объединить классы вин 3,4,5 и 7,8,9, чтобы получить более
+равномерное распределение, чем ранее. Гистограмма данных с новым
+фактором представлена ниже.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x <-}\StringTok{ }\KeywordTok{combineClasses}\NormalTok{(data.wine)}
+\KeywordTok{drawHistogram}\NormalTok{(x, }\StringTok{"Объединенные классы вин"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0xce
+\end{verbatim}
+
+\begin{verbatim}
+## Warning in title(main = main, sub = sub, xlab = xlab, ylab = ylab, ...):
+## неизвестна ширина символа 0x4
+\end{verbatim}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-19-1.pdf}
+
+\textbf{Построение модели и тестирование} Построим модель с помощью
+метода tree. Проверим на тестовой и тренировочной выборке, построим
+матрицу сопряженности.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{makeDataSets}\NormalTok{(x)}
+\NormalTok{x.tree <-}\StringTok{ }\KeywordTok{tree}\NormalTok{(quality }\OperatorTok{~}\NormalTok{., xdata}\OperatorTok{$}\NormalTok{train)}
+
+\KeywordTok{testModel}\NormalTok{(x.tree, xdata}\OperatorTok{$}\NormalTok{test, xdata}\OperatorTok{$}\NormalTok{train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "test data prediction accuracy: "
+## [1] 0.555102
+## [1] "train data prediction accuracy:"
+## [1] 0.5474732
+\end{verbatim}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction Low Medium High
+##     Low    209    106   11
+##     Medium 108    246   87
+##     High    11    113   89
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.5551          
+##                  95% CI : (0.5234, 0.5865)
+##     No Information Rate : 0.4745          
+##     P-Value [Acc > NIR] : 2.598e-07       
+##                                           
+##                   Kappa : 0.2979          
+##                                           
+##  Mcnemar's Test P-Value : 0.3341          
+## 
+## Statistics by Class:
+## 
+##                      Class: Low Class: Medium Class: High
+## Sensitivity              0.6372        0.5290     0.47594
+## Specificity              0.8206        0.6214     0.84363
+## Pos Pred Value           0.6411        0.5578     0.41784
+## Neg Pred Value           0.8180        0.5937     0.87223
+## Prevalence               0.3347        0.4745     0.19082
+## Detection Rate           0.2133        0.2510     0.09082
+## Detection Prevalence     0.3327        0.4500     0.21735
+## Balanced Accuracy        0.7289        0.5752     0.65978
+\end{verbatim}
+
+Изображение дерева представлено ниже.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{options}\NormalTok{(}\DataTypeTok{repr.plot.width =} \DecValTok{14}\NormalTok{, }\DataTypeTok{repr.plot.height =} \DecValTok{10}\NormalTok{)}
+\KeywordTok{draw.tree}\NormalTok{(x.tree, }\DataTypeTok{cex =} \FloatTok{0.75}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-21-1.pdf}
+Построим модель с помощью метода rpart. Проверим на тестовой и
+тренировочной выборке, построим матрицу сопряженности.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x.rpart <-}\StringTok{ }\KeywordTok{rpart}\NormalTok{(quality }\OperatorTok{~}\NormalTok{., xdata}\OperatorTok{$}\NormalTok{train)}
+\KeywordTok{testModel}\NormalTok{(x.rpart, xdata}\OperatorTok{$}\NormalTok{test, xdata}\OperatorTok{$}\NormalTok{train)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "test data prediction accuracy: "
+## [1] 0.5714286
+## [1] "train data prediction accuracy:"
+## [1] 0.5612557
+\end{verbatim}
+
+\begin{verbatim}
+## Confusion Matrix and Statistics
+## 
+##           Reference
+## Prediction Low Medium High
+##     Low    189    135    2
+##     Medium  77    345   19
+##     High     6    181   26
+## 
+## Overall Statistics
+##                                           
+##                Accuracy : 0.5714          
+##                  95% CI : (0.5398, 0.6027)
+##     No Information Rate : 0.6745          
+##     P-Value [Acc > NIR] : 1               
+##                                           
+##                   Kappa : 0.2782          
+##                                           
+##  Mcnemar's Test P-Value : <2e-16          
+## 
+## Statistics by Class:
+## 
+##                      Class: Low Class: Medium Class: High
+## Sensitivity              0.6949        0.5219     0.55319
+## Specificity              0.8065        0.6991     0.79957
+## Pos Pred Value           0.5798        0.7823     0.12207
+## Neg Pred Value           0.8731        0.4137     0.97262
+## Prevalence               0.2776        0.6745     0.04796
+## Detection Rate           0.1929        0.3520     0.02653
+## Detection Prevalence     0.3327        0.4500     0.21735
+## Balanced Accuracy        0.7507        0.6105     0.67638
+\end{verbatim}
+
+Изображение дерева представлено ниже.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{draw.tree}\NormalTok{(x.rpart, }\DataTypeTok{cex =} \FloatTok{0.75}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-23-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{rpart.plot}\NormalTok{(x.rpart, }
+           \DataTypeTok{type=}\DecValTok{4}\NormalTok{,}
+           \DataTypeTok{extra=}\DecValTok{101}\NormalTok{, }
+           \DataTypeTok{box.palette=}\StringTok{"GnBu"}\NormalTok{,}
+           \DataTypeTok{branch.lty=}\DecValTok{3}\NormalTok{, }
+           \DataTypeTok{shadow.col=}\StringTok{"gray"}\NormalTok{, }
+           \DataTypeTok{nn=}\OtherTok{TRUE}\NormalTok{,}
+           \DataTypeTok{roundint =} \OtherTok{FALSE}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{report_files/figure-latex/unnamed-chunk-23-2.pdf}
+\#\#\#\#\textbf{Заключение}\\
+По итогам проведенного объединения классов получено незначительное
+улучшение на 3-4\% при распознавании как тестовой, так и тренировочной
+выборок. Метод \texttt{rpart} даёт результаты чуть лучше, чем метод
+\texttt{tree}. Кроме того, в библиотеке \texttt{rpart} есть метод
+\texttt{rpart.plot} для удобного и наглядного изображения дерева
+решений.
+
+\end{document}
