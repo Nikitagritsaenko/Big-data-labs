@@ -200,7 +200,10 @@ NbClust(
 
 ***Видим, что наш результат совпал с результатом NbClust.***
 
-#### **Задача классификации**
+
+***Видим, что наш результат совпал с результатом NbClust.***
+
+### **Задача классификации**
 
 Имеется множество объектов $X$, конечное множество ответов $Y$. 
 
@@ -208,80 +211,225 @@ NbClust(
 
 Ставится задача построить решающее правило $a:X→Y$, которое приближало бы функцию $a^* (x)$ на всем множестве $X$ (построить алгоритм, классифицирующий произвольный объект из исходного множества).
 
-#### **Задание**: 
+####**Задание**: 
 
 Имеется таблица данных о качестве белых вин (Файл $winequality-white.csv$). Требуется методом деревьев по 90% данных построить классификатор и проверить его на 10% приведенных данных. Сделать выводы.
 
-#### **Решение**:
+####**Данные**:
 
 Описание данных: 4898 наблюдений, 12 переменных.  Качество вина оценивается переменной $quality$, значения которой от 0 (плохое вино) до 10 (самое лучшее вино). Следующая гистограмма отображает исходные данные. 
 
-```{r}
+
+####**Код программы**
+
+**Библиотеки и функции, необходимые для работы программы**
++ `drawHistogram` - создает и отображает гистограмму с заголовком `title` для таблицы `wines`. В качестве критерия используется колонка с именем `quality`. Над каждым столбцом гистограммы отображается соответствующее числовое значение.
++ `makeDataSets` - перемешивает данные(строки) таблицы `wines` случайным образом и создает два набора, содержащие 90% и 10% данных соответственно. Возвращаемое значение - список из двух наборов данных. Случайный закон инициализируется константным значением `seed`, чтобы результаты воспроизводились от опыта к опыту.
++ `testModel` - производит тестирование модели `tree` на наборах `test_data` и `train_data.` Предполагается, что обучение модели производится с помощью набора `train_data.` 
++ `combineClasses` - изменяет столбец quality, являющийся фактором таблицы wines. Комбинирует уровни факторов '3', '4', '5', а также '7', '8', '9' в уровни 'Low' и 'High'. Уровень '6' переименовывается в 'Medium'.
+**Запустите этот фрагмент кода для корректной работы следующих фрагментов.**
+```{r eval = TRUE}
+library(repr)
+library(maptree)
+library(tree)
+library(caret)
+library(forcats)
+library(dplyr)
+
+drawHistogram <- function(wines, title){
+  options(repr.plot.width=6, repr.plot.height=6)
+  element_samples <- summary(wines$quality)
+  midpoints <- barplot(element_samples, col = "peachpuff1", main = title)
+  abline(h = nrow(wines), lty = 2, col = 2)
+  num_elements <- dim(data.wine)[1]
+  num_types <- length(element_samples)
+  y_coord <- element_samples
+  max_val <- max(element_samples)
+  for (j in seq(1, num_types)) {
+    if (element_samples[j] / max_val > 0.9){
+      y_coord[j] <- y_coord[j] - 0.1 * max_val 
+    }
+    else{
+      y_coord[j] <- y_coord[j] + 0.05 * max_val
+    }
+        
+  }
+  text(midpoints, y_coord, labels=element_samples)
+}
+
+makeDataSets <- function(wines){
+  set.seed(12345) #constant seed for result reproducibility
+  n <- dim(wines)[1]
+  data <- wines[order(runif(n)),]
+  n.train <- as.integer(0.8 * n)
+  data.train <- data[1:n.train,]
+  data.test <- data[(n.train + 1):n,]
+  return (list(train = data.train, test = data.test))
+}
+
+testModel <- function(tree, test_data, train_data){
+  
+  predict.test <- predict(tree, test_data, type = "class")
+  predict.train <- predict(tree, train_data, type = "class")
+  
+  result.test <- table(test_data$quality, predict.test)
+  result.train <- table(train_data$quality, predict.train)
+  
+  accuracy.test <- sum(diag(result.test)) / sum(result.test)
+  accuracy.train <- sum(diag(result.train)) / sum(result.train)
+  print("test data prediction accuracy: ")
+  print(accuracy.test)
+  print("train data prediction accuracy:")
+  print(accuracy.train)
+  
+  #confusion matrix
+  caret::confusionMatrix(test_data$quality, predict.test)
+  
+}
+
+
+combineClasses <- function(wines){
+  df = wines
+  df %>%
+    mutate(quality = fct_collapse(df$quality,
+                                  Low = c("3","4","5"),
+                                  Medium = c("6"),
+                                  High = c("7","8","9")))->x
+  return(x)
+}
+```
+**Считывание данных и предобработка**
+```{r eval = TRUE}
+# Read data
 data.wine <- read.table('data/winequality-white.csv', 
                         sep=';', 
                         header=TRUE, 
                         na.strings="NA",
                         stringsAsFactors=T)
 
+# Make 'quality' vector to be factor
 data.wine$quality <- as.factor(data.wine$quality)
 
-data.wine[, -dim(data.wine)[2]] <- scale(data.wine[, -dim(data.wine)[2]])
+# Remove 'NA' rows from table. 
+# N.B. In file 'data/winequality-white.csv' there is no NA values, so this line is irrelevant
+data.wine <- data.wine[complete.cases(data.wine),]
 
-element_samples <- summary(data.wine$quality)
-#barplot(element_samples, col = "peachpuff1")
+# Scale all columns in table except 'quality', which is factor column
+data.wine[, -dim(data.wine)[2]] <- scale(data.wine[, -dim(data.wine)[2]])
 ```
 
-[**Гистограмма распределения вин по качеству**]
+**Гистограмма распределения вин по качеству**
+```{r eval = TRUE}
+drawHistogram(data.wine, "Гистограмма вин по качеству")
+```
 
 Видно, что больше всего имеется сведений о вине среднего качества, а о вине низшего и высшего сорта известно мало. Вообще, для задачи классификации такое распределение исходных данных является очень плохим. Классификатор, построенный по этим данным, будет плохо работать.
 
-Перемешаем данные, разделим их на две группы – тренировочную (90%) и тестовую (10%).
-Получим следующие гистограммы для тренировочной и тестовой выборок.
-```r
-element_samples <- summary(data.train$quality)#apply(data.train[c(-10)] != 0, 2, sum)
-barplot(element_samples, col = "peachpuff1")
-abline(h = nrow(data.train), lty = 2, col = 2)
-title(main = "Train set types number")
 
-element_samples <- summary(data.test$quality)#apply(data.test[c(-10)] != 0, 2, sum)
-barplot(element_samples, col = "peachpuff1")
-abline(h = nrow(data.test), lty = 2, col = 2)
-title(main = "Test set types number")
+**Разделение данных на тренировочную и тестовую выборки**
+
+Перемешаем данные, разделим их на две группы – тренировочную (90%) и тестовую (10%).
+
+```{r eval = TRUE}
+
+data <- makeDataSets(data.wine)
+
 ```
 
-[**Гистограммы выборок**]
+Получим следующие гистограммы для тренировочной и тестовой выборок.
+```{r eval = TRUE}
 
-Построим дерево решений при помощи `rpart`.
+drawHistogram(data$train, "Тренировочная выборка")
+
+```
+```{r eval = TRUE}
+
+drawHistogram(data$test, "Тестовая выборка")
+
+```
+
+**Построение модели класификации**
+Построим дерево решений при помощи `tree`. Проверим его на выборках, а также построим матрицу сопряженности для построенной модели.
+
+```{r eval = TRUE}
+
+wine.tree <- tree(quality ~., data$train)
+
+testModel(wine.tree, data$test, data$train)
+
+```
+
 Полученное дерево решений представлено на иллюстрации ниже.
-```r
-tree <- rpart(quality ~., data.train)
-rpart.plot(tree, 
+```{r eval = TRUE}
+options(repr.plot.width = 14, repr.plot.height = 10)
+draw.tree(wine.tree, cex = 0.75)
+```
+
+Построим дерево решений при помощи `rpart`. Проверим его на выборках, а также построим матрицу сопряженности для построенной модели.
+
+```{r eval = TRUE}
+wine.rpart <- rpart(quality ~., data$train)
+testModel(wine.rpart, data$test, data$train)
+
+```
+
+Полученное дерево решений представлено на иллюстрации ниже.
+```{r eval = TRUE}
+draw.tree(wine.rpart, cex = 0.75)
+rpart.plot(wine.rpart, 
            type=4,
            extra=101, 
            box.palette="GnBu",
            branch.lty=3, 
            shadow.col="gray", 
-           nn=TRUE
+           nn=TRUE,
+           roundint = FALSE
 )
-predict.test <- predict(tree, data.test, type = "class")
-predict.train <- predict(tree, data.train, type = "class")
-
-result.test <- table(data.test$quality, predict.test)
-result.train <- table(data.train$quality, predict.train)
-
-accuracy.test <- sum(diag(result.test)) / sum(result.test)
-accuracy.train <- sum(diag(result.train)) / sum(result.train)
 ```
 
-[**Дерево классификатора**]
-
-Полученное дерево охватывает не все категории вин из исходных данных, а только 5, 6 и 7. Из-за этого результат применения к тестовой выборке ожидается неудовлетворительным.
-
-Применим дерево решений сначала к исходным данным, используя predict. Полученную классификацию вин сравниваем с исходной.
-
-+ Для тренировочной выборки точность классификации составляет 0.5673469
-
-+ Для тестовой выборки точность классификации составляет 0.5383394
+Полученные деревья охватывают не все категории вин из исходных данных, а только 5, 6 и 7. Из-за этого результат применения к тестовой выборке оказывается неудовлетворительным.
 
 Полученный результат следует признать плохим, поскольку дерево решений правильно классифицирует чуть больше 50% данных.
 
+**Улучшение распознавания путем слияния классов качества вин**
+
+Попробуем объединить классы вин 3,4,5 и 7,8,9, чтобы получить более равномерное распределение, чем ранее. Гистограмма данных с новым фактором представлена ниже.
+```{r eval = TRUE}
+x <- combineClasses(data.wine)
+drawHistogram(x, "Объединенные классы вин")
+```
+
+**Построение модели и тестирование**
+Построим модель с помощью метода tree. Проверим на тестовой и тренировочной выборке, построим матрицу сопряженности.
+```{r eval = TRUE}
+xdata <- makeDataSets(x)
+x.tree <- tree(quality ~., xdata$train)
+
+testModel(x.tree, xdata$test, xdata$train)
+```
+Изображение дерева представлено ниже.
+```{r eval = TRUE}
+options(repr.plot.width = 14, repr.plot.height = 10)
+draw.tree(x.tree, cex = 0.75)
+```
+Построим модель с помощью метода rpart.  Проверим на тестовой и тренировочной выборке, построим матрицу сопряженности.
+```{r eval = TRUE}
+x.rpart <- rpart(quality ~., xdata$train)
+testModel(x.rpart, xdata$test, xdata$train)
+```
+Изображение дерева представлено ниже.
+```{r eval = TRUE}
+draw.tree(x.rpart, cex = 0.75)
+rpart.plot(x.rpart, 
+           type=4,
+           extra=101, 
+           box.palette="GnBu",
+           branch.lty=3, 
+           shadow.col="gray", 
+           nn=TRUE,
+           roundint = FALSE
+)
+```
+####**Заключение**    
+По итогам проведенного объединения классов получено незначительное улучшение на 3-4% при распознавании как тестовой, так и тренировочной выборок.
+Метод `rpart` даёт результаты чуть лучше, чем метод `tree`. Кроме того, в библиотеке `rpart` есть метод `rpart.plot` для удобного и наглядного изображения дерева решений.
